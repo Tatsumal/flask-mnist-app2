@@ -3,6 +3,7 @@ from flask import Flask, request, redirect, render_template, flash
 from werkzeug.utils import secure_filename
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.preprocessing import image
+import secrets
 
 import numpy as np
 
@@ -14,6 +15,8 @@ UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
+secret = secrets.token_urlsafe(32)
+app.secret_key = secret
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -43,7 +46,21 @@ def upload_file():
             #変換したデータをモデルに渡して予測する
             result = model.predict(data)[0]
             predicted = result.argmax()
-            pred_answer = "これは " + classes[predicted] + " です"
+
+            print(result)
+            print(len(result))
+
+            pred_answer = ""
+            for i in range(len(result)):
+                pred_answer += "{0}の確率は{1}".format(str(classes[i]), str(round(result[i], 3) * 100))
+                if i == predicted:
+                    pred_answer += "※"
+                pred_answer += ", "
+
+            # print(result)
+            # result = result[0]
+            # predicted = result.argmax()
+            # pred_answer = "これは " + classes[predicted] + " です"
 
             return render_template("index.html",answer=pred_answer)
 
