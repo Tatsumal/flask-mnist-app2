@@ -22,7 +22,7 @@ app.secret_key = secret
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-model = load_model('./model.h5')#学習済みモデルをロード
+model = load_model('./model.h5')    #学習済みモデルをロード
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -57,14 +57,3 @@ def upload_file():
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8080))
     app.run(host ='0.0.0.0',port = port)
-
-    # filepath = "./uploads/figure.png"
-    # #受け取った画像を読み込み、np形式に変換
-    # img = cv2.imread(filepath)                                  # ファイルの読み込み
-    # img = cv2.resize(img,dsize=(image_size, image_size))    # リサイズ
-    # data = np.array([img])
-    # #変換したデータをモデルに渡して予測する
-    # result = model.predict(data)[0]
-    # predicted = result.argmax()
-    # pred_answer = "これは " + classes[predicted] + " です"
-    # print(pred_answer)
